@@ -65,7 +65,13 @@ RUN apt-get update --fix-missing && \
     # from https://github.com/ContinuumIO/docker-images/blob/master/anaconda3/Dockerfile
     libglib2.0-0 libxext6 libsm6 libxrender1 \
     # Solving installation-of-package-devtools-had-non-zero-exit-status when R-Kernel is used
-    libssl-dev libcurl4-gnutls-dev libxml2-dev
+    libssl-dev libcurl4-gnutls-dev libxml2-dev \
+    # On Ubuntu/Debian, a header package is needed to compile RCurl
+    # https://irkernel.github.io/installation/#devel-panel
+    libcurl4-openssl-dev \
+    # solving Ubuntu Missing add-apt-repository command
+    # http://lifeonubuntu.com/ubuntu-missing-add-apt-repository-command/
+    software-properties-common python-software-properties
 
 RUN echo 'export PATH=/home/aqua/conda/bin:$PATH' > /etc/profile.d/conda.sh
 
@@ -101,7 +107,7 @@ RUN wget --quiet https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.
 
 # amasing requirements
 RUN conda install -y bcrypt passlib
-RUN conda install -y -c conda-forge gdal geopy 'folium=0.3.0' rasterio 
+RUN conda install -y -c conda-forge gdal geopy 'folium=0.3.0' rasterio
 
 # setting-up as default the conda-forge channel.
 #RUN conda config --system --add channels conda-forge && \
