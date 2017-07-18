@@ -66,9 +66,6 @@ RUN apt-get update --fix-missing && \
     libglib2.0-0 libxext6 libsm6 libxrender1 \
     # Solving installation-of-package-devtools-had-non-zero-exit-status when R-Kernel is used
     libssl-dev libcurl4-gnutls-dev libxml2-dev \
-    # On Ubuntu/Debian, a header package is needed to compile RCurl
-    # https://irkernel.github.io/installation/#devel-panel
-    libcurl4-openssl-dev \
     # solving Ubuntu Missing add-apt-repository command
     # http://lifeonubuntu.com/ubuntu-missing-add-apt-repository-command/
     software-properties-common python-software-properties
