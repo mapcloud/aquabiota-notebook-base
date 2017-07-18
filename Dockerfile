@@ -104,7 +104,9 @@ RUN wget --quiet https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.
 
 # amasing requirements
 RUN conda install -y bcrypt passlib
-RUN conda install -y -c conda-forge gdal geopy 'folium=0.3.0' rasterio
+RUN conda install -y -c conda-forge gdal geopy 'folium=0.3.0' rasterio \
+    ipyleaflet bqplot cmocean=1.1
+RUN conda install -c scitools shapely=1.5.13 cartopy=0.15.0 iris=1.11.0
 
 # setting-up as default the conda-forge channel.
 #RUN conda config --system --add channels conda-forge && \
