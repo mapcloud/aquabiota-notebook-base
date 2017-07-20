@@ -26,6 +26,7 @@ ENV PATH $CONDA_DIR/bin:$PATH
 ENV SHELL /bin/bash
 ENV WORKSPACE_DIR $HOME/workspace
 ENV DATA_DIR $WORKSPACE_DIR/data
+ENV GIT_DIR $WORKSPACE_DIR/git
 ENV NOTEBOOK_DIR $WORKSPACE_DIR/notebooks
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -93,6 +94,7 @@ RUN mkdir -p $DATA_DIR
 WORKDIR $WORKSPACE_DIR
 
 RUN mkdir -p $NOTEBOOK_DIR
+RUN mkdir -p $GIT_DIR
 #
 
 RUN cd $HOME
@@ -136,7 +138,8 @@ RUN ipython profile create && echo $(ipython locate)
 USER root
 ## Make sure that notebooks is the current WORKDIR
 WORKDIR $HOME
-
+# Ensure workspace belongs to user
+RUN chown -R $NB_USER:users $WORKSPACE_DIR
 # # Clean up APT when done.
 #RUN apt-get clean && rm -rf /var/lib/apt/lists/* /var/tmp/*
 
