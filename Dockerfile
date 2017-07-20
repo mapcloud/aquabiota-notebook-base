@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# docker run -d -v /your/local/dir/to/data:/home/aqua/workspace/data -v /your/local/dir/to/notebooks:/home/aqua/workspace/notebooks --name jupyter-base -p 8889:8889 aquabiota/notebook-base jupyter notebook --ip='*' --port=8889  --no-browser
+
 # MODIFIED FROM: https://github.com/ContinuumIO/docker-images/blob/master/anaconda3/Dockerfile
 FROM ubuntu:16.04
 
@@ -22,7 +24,9 @@ ENV HOME /home/$NB_USER
 ENV CONDA_DIR $HOME/conda
 ENV PATH $CONDA_DIR/bin:$PATH
 ENV SHELL /bin/bash
-ENV NOTEBOOK_DIR $HOME/workspace/notebooks
+ENV WORKSPACE_DIR $HOME/workspace
+ENV DATA_DIR $WORKSPACE_DIR/data
+ENV NOTEBOOK_DIR $WORKSPACE_DIR/notebooks
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
@@ -84,10 +88,9 @@ RUN apt-get install -y curl grep sed dpkg && \
 #RUN mkdir -p $CONDA_DIR && \
     #mkdir -p $JUPYTER_CONFIG_DIR
 USER $NB_USER
-
-RUN mkdir $HOME/workspace
-WORKDIR $HOME/workspace
-
+# Create the workspace and workspace for data
+RUN mkdir -p $DATA_DIR
+WORKDIR $WORKSPACE_DIR
 
 RUN mkdir -p $NOTEBOOK_DIR
 #
@@ -105,7 +108,7 @@ RUN wget --quiet https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.
 # amasing requirements
 RUN conda install -y bcrypt passlib
 RUN conda install -y -c conda-forge gdal geopy folium rasterio \
-    ipyleaflet bqplot cmocean cartopy iris shapely
+    ipyleaflet bqplot cmocean cartopy iris shapely pyproj
 
 # setting-up as default the conda-forge channel.
 #RUN conda config --system --add channels conda-forge && \
