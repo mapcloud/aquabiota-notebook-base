@@ -19,6 +19,7 @@ ENV LANG en_US.utf8
 
 # Configure environment
 ENV NB_USER aqua
+ENV AQUABIOTA_USER user.name
 ENV NB_UID 1000
 ENV HOME /home/$NB_USER
 ENV CONDA_DIR $HOME/conda
@@ -26,7 +27,7 @@ ENV PATH $CONDA_DIR/bin:$PATH
 ENV SHELL /bin/bash
 ENV WORKSPACE_DIR $HOME/workspace
 ENV DATA_DIR $WORKSPACE_DIR/data
-ENV GIT_DIR $WORKSPACE_DIR/git
+ENV AQUABIOTA_GIT_DIR $WORKSPACE_DIR/git
 ENV NOTEBOOK_DIR $WORKSPACE_DIR/notebooks
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -94,7 +95,7 @@ RUN mkdir -p $DATA_DIR
 WORKDIR $WORKSPACE_DIR
 
 RUN mkdir -p $NOTEBOOK_DIR
-RUN mkdir -p $GIT_DIR
+RUN mkdir -p $AQUABIOTA_GIT_DIR
 #
 
 RUN cd $HOME
@@ -133,16 +134,17 @@ RUN pip install s2sphere pyorient
 
 RUN ipython profile create && echo $(ipython locate)
 # make sure ipython will know where to find the git packages.
-RUN echo "c.InteractiveShellApp.exec_lines = ['import sys; sys.path.append('/home/aqua/workspace/git/')"] >> /home/aqua/.ipython/profile_default/ipython_notebook_config.py
+RUN echo "c.InteractiveShellApp.exec_lines = ['import sys; sys.path.append('/home/aqua/git/')"] >> /home/aqua/.ipython/profile_default/ipython_notebook_config.py
 
 #COPY ipython_config.py $JUPYTER_CONFIG_DIR
 #COPY ipython_config.py $(ipython locate)/profile_default
 
 USER root
-## Make sure that notebooks is the current WORKDIR
+## Make sure that notebooks are in the current WORKDIR
 WORKDIR $HOME
 # Ensure workspace belongs to user
 RUN chown -R $NB_USER:users $WORKSPACE_DIR
+
 # # Clean up APT when done.
 #RUN apt-get clean && rm -rf /var/lib/apt/lists/* /var/tmp/*
 
