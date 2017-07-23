@@ -134,9 +134,8 @@ RUN pip install s2sphere pyorient
 
 RUN ipython profile create && echo $(ipython locate)
 # make sure ipython will know where to find the git packages.
-RUN echo "c.InteractiveShellApp.exec_lines = ['import sys; sys.path.append('/home/aqua/git/')"] >> /home/aqua/.ipython/profile_default/ipython_notebook_config.py
 
-#COPY ipython_config.py $JUPYTER_CONFIG_DIR
+COPY ipython_config.py $JUPYTER_CONFIG_DIR
 #COPY ipython_config.py $(ipython locate)/profile_default
 
 USER root
