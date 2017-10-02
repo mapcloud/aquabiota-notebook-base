@@ -28,11 +28,14 @@ ENV SHELL /bin/bash
 ENV WORKSPACE_DIR $HOME/workspace
 ENV DATA_DIR $WORKSPACE_DIR/data
 ENV AQUABIOTA_GIT_DIR $WORKSPACE_DIR/git
-ENV NOTEBOOK_DIR $WORKSPACE_DIR/notebooks
+# ENV NOTEBOOK_DIR $WORKSPACE_DIR/notebooks
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV JUPYTER_CONFIG_DIR $HOME/.ipython/profile_default/
+# Environments for gdal to work
+ENV GDAL_DATA $CONDA_DIR/share/gdal/
+ENV GEOS_DIR $CONDA_DIR
 
 
 # Create jovyan user with UID=1000 and in the 'users' group
@@ -94,7 +97,7 @@ USER $NB_USER
 RUN mkdir -p $DATA_DIR
 WORKDIR $WORKSPACE_DIR
 
-RUN mkdir -p $NOTEBOOK_DIR
+# RUN mkdir -p $NOTEBOOK_DIR
 RUN mkdir -p $AQUABIOTA_GIT_DIR
 #
 
@@ -142,7 +145,9 @@ USER root
 ## Make sure that notebooks are in the current WORKDIR
 WORKDIR $HOME
 # Ensure workspace belongs to user
-RUN chown -R $NB_USER:users $WORKSPACE_DIR
+# Ensure access to .local
+RUN chown -R $NB_USER:users $WORKSPACE_DIR && \
+    chown -R $NB_USER:users $HOME/.local
 
 # # Clean up APT when done.
 #RUN apt-get clean && rm -rf /var/lib/apt/lists/* /var/tmp/*
