@@ -128,7 +128,7 @@ RUN conda update -y --all && \
 
 # installing jupyterlab from conda-forge
 RUN conda install -y -c conda-forge jupyterlab jupyterhub
-# RUN jupyter nbextension enable vega --py --sys-prefix
+RUN jupyter nbextension enable vega --py --sys-prefix
 
 # The following line will update all the conda packages to the latest version
 # using the conda-forge channel. When in production better to set up
