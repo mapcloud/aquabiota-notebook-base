@@ -70,14 +70,15 @@ RUN apt-get update --fix-missing && \
     texlive-xetex \
     vim \
     unzip \
-    p7zip-full \
-    # from https://github.com/ContinuumIO/docker-images/blob/master/anaconda3/Dockerfile
-    libglib2.0-0 libxext6 libsm6 libxrender1 \
-    # Solving installation-of-package-devtools-had-non-zero-exit-status when R-Kernel is used
-    libssl-dev libcurl4-gnutls-dev libxml2-dev \
-    # solving Ubuntu Missing add-apt-repository command
-    # http://lifeonubuntu.com/ubuntu-missing-add-apt-repository-command/
-    software-properties-common python-software-properties
+    p7zip-full
+
+# from https://github.com/ContinuumIO/docker-images/blob/master/anaconda3/Dockerfile
+RUN apt-get install -yq --no-install-recommends libglib2.0-0 libxext6 libsm6 libxrender1
+# Solving installation-of-package-devtools-had-non-zero-exit-status when R-Kernel is used
+RUN apt-get install -yq --no-install-recommends libssl-dev libcurl4-gnutls-dev libxml2-dev
+# solving Ubuntu Missing add-apt-repository command
+# http://lifeonubuntu.com/ubuntu-missing-add-apt-repository-command/
+RUN apt-get install -yq --no-install-recommends software-properties-common python-software-properties
 
 RUN echo 'export PATH=/home/aqua/conda/bin:$PATH' > /etc/profile.d/conda.sh
 
@@ -87,8 +88,6 @@ RUN apt-get install -y curl grep sed dpkg && \
     dpkg -i tini.deb && \
     rm tini.deb && \
     apt-get clean
-
-
 #
 #RUN mkdir -p $CONDA_DIR && \
     #mkdir -p $JUPYTER_CONFIG_DIR
@@ -100,7 +99,6 @@ WORKDIR $WORKSPACE_DIR
 # RUN mkdir -p $NOTEBOOK_DIR
 RUN mkdir -p $AQUABIOTA_GIT_DIR
 #
-
 RUN cd $HOME
 RUN wget --quiet https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh -O $HOME/anaconda.sh && \
     /bin/bash $HOME/anaconda.sh -f -b -p $CONDA_DIR && \
@@ -146,6 +144,7 @@ USER root
 WORKDIR $HOME
 # Ensure workspace belongs to user
 # Ensure access to .local
+RUN mkdir -p $HOME/.local
 RUN chown -R $NB_USER:users $WORKSPACE_DIR && \
     chown -R $NB_USER:users $HOME/.local
 
