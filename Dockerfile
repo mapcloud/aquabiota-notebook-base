@@ -80,6 +80,12 @@ RUN apt-get install -yq --no-install-recommends libssl-dev libcurl4-gnutls-dev l
 # http://lifeonubuntu.com/ubuntu-missing-add-apt-repository-command/
 RUN apt-get install -yq --no-install-recommends software-properties-common python-software-properties
 
+# Installing GDAL
+RUN add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+RUN apt-get update && apt-get upgrade && apt-get build-dep -yq gdal
+#RUN apt-get build-dep-yq python-gdal python3-gdal && \
+#    apt install gdal-bin python-gdal python3-gdal
+
 RUN echo 'export PATH=/home/aqua/conda/bin:$PATH' > /etc/profile.d/conda.sh
 
 RUN apt-get install -y curl grep sed dpkg && \
@@ -113,6 +119,8 @@ RUN wget --quiet https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.
 RUN conda install -y bcrypt passlib
 RUN conda install -y -c conda-forge libgdal gdal geopy folium rasterio \
     ipyleaflet bqplot cmocean cartopy iris shapely pyproj geopandas
+RUN conda update -y --all && \
+    conda clean -tipsy
 
 # setting-up as default the conda-forge channel.
 #RUN conda config --system --add channels conda-forge && \
@@ -120,7 +128,7 @@ RUN conda install -y -c conda-forge libgdal gdal geopy folium rasterio \
 
 # installing jupyterlab from conda-forge
 RUN conda install -y -c conda-forge jupyterlab jupyterhub
-
+# RUN jupyter nbextension enable vega --py --sys-prefix
 
 # The following line will update all the conda packages to the latest version
 # using the conda-forge channel. When in production better to set up
