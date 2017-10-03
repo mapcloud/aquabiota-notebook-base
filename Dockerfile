@@ -83,8 +83,8 @@ RUN apt-get install -yq --no-install-recommends software-properties-common pytho
 # Installing GDAL
 RUN add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
 RUN apt-get update && apt-get upgrade && apt-get build-dep -yq gdal
-#RUN apt-get build-dep-yq python-gdal python3-gdal && \
-#    apt install gdal-bin python-gdal python3-gdal
+RUN apt-get build-dep -yq python-gdal python3-gdal
+RUN apt-get install -yq gdal-bin python-gdal python3-gdal
 
 RUN echo 'export PATH=/home/aqua/conda/bin:$PATH' > /etc/profile.d/conda.sh
 
@@ -117,11 +117,11 @@ RUN wget --quiet https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.
 
 # amasing requirements
 RUN conda install -y bcrypt passlib
-RUN conda install -y -c conda-forge libgdal gdal geopy folium rasterio \
-    ipyleaflet bqplot cmocean cartopy iris shapely pyproj geopandas
+RUN conda install -y -c conda-forge libgdal geopy folium rasterio \
+    ipyleaflet bqplot cmocean cartopy iris shapely pyproj
+RUN conda install -y fiona geopandas
 RUN conda update -y --all && \
     conda clean -tipsy
-
 # setting-up as default the conda-forge channel.
 #RUN conda config --system --add channels conda-forge && \
 #    conda config --system --set auto_update_conda false
@@ -134,7 +134,11 @@ RUN jupyter nbextension enable vega --py --sys-prefix
 # using the conda-forge channel. When in production better to set up
 # directly with version numbers.
 RUN conda update -y --all
-
+# CAREFULL when update as it will raise the following error when running geopandas
+# ImportError: /usr/lib/libgdal.so.20: undefined symbol: sqlite3_column_table_name
+# So, we make sure to downgrade fiona and upgrade gdal to solve the errors
+# Need it to install after geopandas to fix errors
+RUN conda install -y gdal -c conda-forge
 # Installing pip requirements not available through conda
 # COPY pip-requirements.txt /tmp/
 RUN pip install s2sphere pyorient
