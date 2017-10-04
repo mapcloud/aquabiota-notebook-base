@@ -118,10 +118,9 @@ RUN wget --quiet https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.
 # amasing requirements
 RUN conda install -y bcrypt passlib
 RUN conda install -y -c conda-forge libgdal geopy folium rasterio \
-    ipyleaflet bqplot cmocean cartopy iris shapely pyproj
-RUN conda install -y fiona geopandas
-RUN conda update -y --all && \
-    conda clean -tipsy
+    ipyleaflet bqplot cmocean cartopy iris shapely pyproj \
+    fiona geopandas
+RUN conda update -y --all && conda clean -tipsy
 # setting-up as default the conda-forge channel.
 #RUN conda config --system --add channels conda-forge && \
 #    conda config --system --set auto_update_conda false
@@ -129,6 +128,8 @@ RUN conda update -y --all && \
 # installing jupyterlab from conda-forge
 RUN conda install -y -c conda-forge jupyterlab jupyterhub
 RUN jupyter nbextension enable vega --py --sys-prefix
+# Enable ipywidgets in jupyterlab See https://github.com/jupyterlab/jupyterlab/issues/3050
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
 # The following line will update all the conda packages to the latest version
 # using the conda-forge channel. When in production better to set up
@@ -157,8 +158,7 @@ WORKDIR $HOME
 # Ensure workspace belongs to user
 # Ensure access to .local
 RUN mkdir -p $HOME/.local
-RUN chown -R $NB_USER:users $WORKSPACE_DIR && \
-    chown -R $NB_USER:users $HOME/.local
+RUN chown -R $NB_USER:users $WORKSPACE_DIR && chown -R $NB_USER:users $HOME/.local
 
 # # Clean up APT when done.
 #RUN apt-get clean && rm -rf /var/lib/apt/lists/* /var/tmp/*
