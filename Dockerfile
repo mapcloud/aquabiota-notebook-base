@@ -36,7 +36,7 @@ ENV JUPYTER_CONFIG_DIR $HOME/.ipython/profile_default/
 # Environments for gdal to work
 ENV GDAL_DATA $CONDA_DIR/share/gdal/
 ENV GEOS_DIR $CONDA_DIR
-
+ENV LD_LIBRARY_PATH $CONDA_DIR/lib
 
 # Create jovyan user with UID=1000 and in the 'users' group
 RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
@@ -87,6 +87,9 @@ RUN apt-get build-dep -yq python-gdal python3-gdal
 RUN apt-get install -yq gdal-bin python-gdal python3-gdal
 
 RUN echo 'export PATH=/home/aqua/conda/bin:$PATH' > /etc/profile.d/conda.sh
+# Requirement for rgdal when running under anaconda
+RUN echo '# requirement for gdal and rgdal when running under anaconda' >> ~/.bashrc
+RUN echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/aqua/conda/lib"' >> ~/.bashrc
 
 RUN apt-get install -y curl grep sed dpkg && \
     TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o "/v.*\"" | sed 's:^..\(.*\).$:\1:'` && \
