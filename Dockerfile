@@ -36,7 +36,7 @@ ENV JUPYTER_CONFIG_DIR $HOME/.ipython/profile_default/
 # Environments for gdal to work
 ENV GDAL_DATA $CONDA_DIR/share/gdal/
 ENV GEOS_DIR $CONDA_DIR
-ENV LD_LIBRARY_PATH $CONDA_DIR/lib
+
 
 # Create jovyan user with UID=1000 and in the 'users' group
 RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
@@ -72,7 +72,6 @@ RUN apt-get update --fix-missing && \
     unzip \
     p7zip-full
 
-
 # from https://github.com/ContinuumIO/docker-images/blob/master/anaconda3/Dockerfile
 RUN apt-get install -yq --no-install-recommends libglib2.0-0 libxext6 libsm6 libxrender1
 # Solving installation-of-package-devtools-had-non-zero-exit-status when R-Kernel is used
@@ -80,28 +79,14 @@ RUN apt-get install -yq --no-install-recommends libssl-dev libcurl4-gnutls-dev l
 # solving Ubuntu Missing add-apt-repository command
 # http://lifeonubuntu.com/ubuntu-missing-add-apt-repository-command/
 RUN apt-get install -yq --no-install-recommends software-properties-common python-software-properties
-#
-RUN add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update
-# installing ZeroMQ core engine in C++, implements ZMTP/3.0 http://www.zeromq.org
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 62EB1A0917280DDF
-RUN sh -c "echo 'deb http://download.opensuse.org/repositories/network:/messaging:/zeromq:/release-stable/xUbuntu_16.04/ /' > /etc/apt/sources.list.d/libzmq3-dev.list"
-RUN apt-get -y update
-RUN apt-get install -yq libzmq3-dev --allow-unauthenticated
 
-# Installing dependencies for R
-RUN apt-get install -y libgdal1-dev libproj-dev
-RUN apt-get install -y libgeos-dev
 # Installing GDAL
-# RUN add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
-RUN apt-get update && apt-get upgrade -yq && apt-get build-dep -yq gdal
+RUN add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+RUN apt-get update && apt-get upgrade && apt-get build-dep -yq gdal
 RUN apt-get build-dep -yq python-gdal python3-gdal
 RUN apt-get install -yq gdal-bin python-gdal python3-gdal
 
 RUN echo 'export PATH=/home/aqua/conda/bin:$PATH' > /etc/profile.d/conda.sh
-# Requirement for rgdal when running under anaconda
-RUN echo '# requirement for gdal and rgdal when running under anaconda' >> ~/.bashrc
-RUN echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/aqua/conda/lib"' >> ~/.bashrc
-RUN ldconfig
 
 RUN apt-get install -y curl grep sed dpkg && \
     TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o "/v.*\"" | sed 's:^..\(.*\).$:\1:'` && \
