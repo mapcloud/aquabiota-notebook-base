@@ -35,6 +35,7 @@ ENV LANGUAGE en_US.UTF-8
 ENV JUPYTER_CONFIG_DIR $HOME/.ipython/profile_default/
 # Environments for gdal to work
 ENV GDAL_DATA $CONDA_DIR/share/gdal/
+# /home/aqua/conda/lib/python3.6/site-packages
 ENV GEOS_DIR $CONDA_DIR
 
 
@@ -81,10 +82,10 @@ RUN apt-get install -yq --no-install-recommends libssl-dev libcurl4-gnutls-dev l
 RUN apt-get install -yq --no-install-recommends software-properties-common python-software-properties
 
 # Installing GDAL
-RUN add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
-RUN apt-get update && apt-get upgrade && apt-get build-dep -yq gdal
-RUN apt-get build-dep -yq python-gdal python3-gdal
-RUN apt-get install -yq gdal-bin python-gdal python3-gdal
+# RUN add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+# RUN apt-get update && apt-get upgrade && apt-get build-dep -yq gdal
+# RUN apt-get build-dep -yq python-gdal python3-gdal
+# RUN apt-get install -yq gdal-bin python-gdal python3-gdal
 
 RUN echo 'export PATH=/home/aqua/conda/bin:$PATH' > /etc/profile.d/conda.sh
 
