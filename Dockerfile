@@ -122,7 +122,6 @@ RUN conda install -y -c conda-forge libgdal geopy folium rasterio \
     ipyleaflet bqplot cmocean cartopy iris shapely pyproj \
     fiona geopandas
 RUN conda update -y --all && conda clean -tipsy
-RUN conda install -y xmltodic
 # setting-up as default the conda-forge channel.
 #RUN conda config --system --add channels conda-forge && \
 #    conda config --system --set auto_update_conda false
