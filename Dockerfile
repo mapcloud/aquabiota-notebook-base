@@ -145,6 +145,7 @@ RUN conda install -y gdal -c conda-forge
 # COPY pip-requirements.txt /tmp/
 RUN pip install s2sphere pyorient
 #
+RUN conda install -c conda-forge xmltodict
 #--requirement /tmp/pip-requirements.txt
 
 RUN ipython profile create && echo $(ipython locate)
