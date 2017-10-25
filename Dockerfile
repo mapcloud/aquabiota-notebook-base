@@ -120,7 +120,7 @@ RUN wget --quiet https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.
 RUN conda install -y bcrypt passlib
 RUN conda install -y -c conda-forge libgdal geopy folium rasterio \
     ipyleaflet bqplot cmocean cartopy iris shapely pyproj \
-    fiona geopandas
+    fiona geopandas xmltodict
 RUN conda update -y --all && conda clean -tipsy
 # setting-up as default the conda-forge channel.
 #RUN conda config --system --add channels conda-forge && \
@@ -143,7 +143,7 @@ RUN conda update -y --all
 RUN conda install -y gdal -c conda-forge
 # Installing pip requirements not available through conda
 # COPY pip-requirements.txt /tmp/
-RUN pip install s2sphere pyorient
+RUN pip install s2sphere pyorient untangle
 #
 #--requirement /tmp/pip-requirements.txt
 
